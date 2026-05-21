@@ -1,20 +1,18 @@
 package com.ppfranco.projeto01.entidades;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
-
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "tb_user")
 public class User implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -24,12 +22,9 @@ public class User implements Serializable {
 	private String email;
 	private String telefone;
 	private String senha;
-	
-	
-	
-	
-	public User () {
-		
+
+	public User() {
+
 	}
 
 	public User(Long id, String nome, String email, String telefone, String senha) {
@@ -40,7 +35,7 @@ public class User implements Serializable {
 		this.senha = senha;
 	}
 
-	public Long  getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -80,7 +75,6 @@ public class User implements Serializable {
 		this.senha = senha;
 	}
 
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, nome);
@@ -97,7 +91,5 @@ public class User implements Serializable {
 		User other = (User) obj;
 		return Objects.equals(id, other.id) && Objects.equals(nome, other.nome);
 	}
-
-	
 
 }
