@@ -9,31 +9,32 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ppfranco.projeto01.entidades.Pedido;
+import com.ppfranco.projeto01.entidades.Categoria;
+import com.ppfranco.projeto01.servicos.CategoriaServico;
 
-import com.ppfranco.projeto01.servicos.PedidoServico;
+
 
 @RestController
-@RequestMapping(value = "/pedido")
-public class PedidoRecurso {
-	
+@RequestMapping(value = "/categoria")
+public class CategoriaRecurso {
 	
 	@Autowired
-	private PedidoServico servico;
+	private CategoriaServico servico;
+	
 	
 	@GetMapping
-	public ResponseEntity<List<Pedido>> findAll(){
-		List<Pedido> pedidos = servico.findAll();
-		return ResponseEntity.ok().body(pedidos);
-		
+	public ResponseEntity<List<Categoria>> findAll(){
+		List<Categoria> lista = servico.findAll();
+		return ResponseEntity.ok().body(lista);
 	}
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Pedido> findById(@PathVariable Long id){
-		Pedido obj = servico.findById(id);
+	public ResponseEntity<Categoria> findById(@PathVariable Long id){
+		Categoria obj = servico.findById(id);
 		return ResponseEntity.ok().body(obj);
-		
-		
 	}
+	
 
+	
+	
 }

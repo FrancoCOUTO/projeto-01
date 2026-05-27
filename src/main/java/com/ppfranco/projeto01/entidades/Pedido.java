@@ -2,14 +2,20 @@ package com.ppfranco.projeto01.entidades;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+
+import com.ppfranco.projeto01.enuns.StatusPedido;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -26,16 +32,24 @@ public class Pedido implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "cliente_id")
 	private User cliente;
+	
+	private Integer statusPedido;
+	
+	@OneToMany(mappedBy = "id.pedido", fetch = FetchType.EAGER)
+	private Set<ItemPedido> itens = new HashSet<>();
 
 	public Pedido() {
 
 	}
 
-	public Pedido(Long id, Instant moment, User cliente) {
+	public Pedido(Long id, Instant moment, User cliente , StatusPedido statusPedido) {
 		super();
 		this.id = id;
 		this.moment = moment;
 		this.cliente = cliente;
+		setStatusPedido(statusPedido);
+		
+		
 	}
 
 	public Long getId() {
@@ -60,6 +74,22 @@ public class Pedido implements Serializable {
 
 	public void setCliente(User cliente) {
 		this.cliente = cliente;
+	}
+	
+
+	public StatusPedido getStatusPedido() {
+		return StatusPedido.statusPedido(statusPedido) ;
+	}
+
+	public void setStatusPedido(StatusPedido statusPedido) {
+		if(statusPedido != null) {
+		this.statusPedido = statusPedido.getCodigo();
+		}
+	}
+	
+	
+	public Set<ItemPedido> getItemPedido(){ 
+		return itens;
 	}
 
 	@Override
