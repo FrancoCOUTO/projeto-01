@@ -8,6 +8,7 @@ import java.util.Set;
 
 import com.ppfranco.projeto01.enuns.StatusPedido;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -16,14 +17,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_pedido")
 public class Pedido implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -32,24 +33,26 @@ public class Pedido implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "cliente_id")
 	private User cliente;
-	
+
 	private Integer statusPedido;
-	
+
 	@OneToMany(mappedBy = "id.pedido", fetch = FetchType.EAGER)
 	private Set<ItemPedido> itens = new HashSet<>();
+
+	@OneToOne(mappedBy = "pedido", cascade = CascadeType.ALL)
+	private Pagamento pagamento;
 
 	public Pedido() {
 
 	}
 
-	public Pedido(Long id, Instant moment, User cliente , StatusPedido statusPedido) {
+	public Pedido(Long id, Instant moment, User cliente, StatusPedido statusPedido) {
 		super();
 		this.id = id;
 		this.moment = moment;
 		this.cliente = cliente;
 		setStatusPedido(statusPedido);
-		
-		
+
 	}
 
 	public Long getId() {
@@ -75,21 +78,35 @@ public class Pedido implements Serializable {
 	public void setCliente(User cliente) {
 		this.cliente = cliente;
 	}
-	
 
 	public StatusPedido getStatusPedido() {
-		return StatusPedido.statusPedido(statusPedido) ;
+		return StatusPedido.statusPedido(statusPedido);
 	}
 
 	public void setStatusPedido(StatusPedido statusPedido) {
-		if(statusPedido != null) {
-		this.statusPedido = statusPedido.getCodigo();
+		if (statusPedido != null) {
+			this.statusPedido = statusPedido.getCodigo();
 		}
 	}
-	
-	
-	public Set<ItemPedido> getItemPedido(){ 
+
+	public Set<ItemPedido> getItem() {
 		return itens;
+	}
+
+	public Pagamento getPagamento() {
+		return pagamento;
+	}
+
+	public void setPagamento(Pagamento pagamento) {
+		this.pagamento = pagamento;
+	}
+	
+	public double getTotal() {
+		double soma = 0;
+		for(ItemPedido p : itens) {
+			soma += p.getsubTotal();
+		}
+		return soma;
 	}
 
 	@Override
@@ -108,5 +125,7 @@ public class Pedido implements Serializable {
 		Pedido other = (Pedido) obj;
 		return Objects.equals(id, other.id);
 	}
+	
+	
 
 }

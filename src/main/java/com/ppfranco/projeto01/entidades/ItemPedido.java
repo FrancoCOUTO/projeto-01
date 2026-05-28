@@ -61,6 +61,10 @@ public class ItemPedido {
 	public void setPedido(Pedido pedido) {
 		id.setPedido(pedido);
 	}
+	
+	public Double getsubTotal() {
+		return quantidade * preco;
+	}
 
 	@Override
 	public int hashCode() {
@@ -78,5 +82,4 @@ public class ItemPedido {
 		ItemPedido other = (ItemPedido) obj;
 		return Objects.equals(preco, other.preco) && Objects.equals(quantidade, other.quantidade);
 	}
-
 }
