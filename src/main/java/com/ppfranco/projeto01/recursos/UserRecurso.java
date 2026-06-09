@@ -2,6 +2,7 @@ package com.ppfranco.projeto01.recursos;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.ppfranco.projeto01.dto.UserDTO;
 import com.ppfranco.projeto01.entidades.User;
 import com.ppfranco.projeto01.servicos.UserServico;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,23 +28,26 @@ public class UserRecurso {
 	private UserServico servico;
 
 	@GetMapping
-	public ResponseEntity<List<User>> findall() {
+	public ResponseEntity<List<UserDTO>> findall() {
 		List<User> lista = servico.findAll();
-		return ResponseEntity.ok().body(lista);
+		List<UserDTO> listaDto = lista.stream().map(x -> new UserDTO(x)).collect(Collectors.toList());
+		return ResponseEntity.ok().body(listaDto);
 
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<User> findById(@PathVariable long id) {
+	public ResponseEntity<UserDTO> findById(@PathVariable long id) {
 		User obj = servico.findById(id);
-		return ResponseEntity.ok().body(obj);
+		UserDTO userDto = new UserDTO(obj);
+		return ResponseEntity.ok().body(userDto);
 	}
 
 	@PostMapping
-	public ResponseEntity<User> insert(@RequestBody User obj) {
+	public ResponseEntity<UserDTO> insert(@RequestBody UserDTO objDto) {
+		User obj = servico.fromDTO(objDto);
 		obj = servico.insert(obj);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
-		return ResponseEntity.created(uri).body(obj);
+		return ResponseEntity.created(uri).body(new UserDTO(obj));
 	}
 
 	@DeleteMapping(value = "/{id}")
@@ -53,9 +58,10 @@ public class UserRecurso {
 	}
 	
 	@PutMapping(value = "/{id}")
-	private ResponseEntity<User> update (@PathVariable Long id, @RequestBody User obj){
+	public ResponseEntity<UserDTO> update (@PathVariable Long id, @RequestBody UserDTO objDto){
+		User obj = servico.fromDTO(objDto);
 		obj = servico.update(id, obj);
-		return ResponseEntity.ok().body(obj);
+		return ResponseEntity.ok().body(new UserDTO(obj));
 		
 	}
 	

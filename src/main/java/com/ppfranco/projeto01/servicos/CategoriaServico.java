@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ppfranco.projeto01.dto.UserDTO;
 import com.ppfranco.projeto01.entidades.Categoria;
 import com.ppfranco.projeto01.repositories.CategoriaRepositories;
 
@@ -23,6 +24,13 @@ public class CategoriaServico {
 	public Categoria findById(Long id) {
 		Optional<Categoria> obj = repositorio.findById(id);
 		return obj.get();
+	}
+	
+	public Categoria fromDTO(UserDTO objdto) {
+		Categoria categoria = new Categoria();
+		categoria.setId(objdto.getId());
+		categoria.setNome(objdto.getNome());		
+		return categoria;
 	}
 	
 

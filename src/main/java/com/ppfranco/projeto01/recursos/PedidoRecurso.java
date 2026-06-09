@@ -1,6 +1,7 @@
 package com.ppfranco.projeto01.recursos;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ppfranco.projeto01.dto.PedidoDTO;
 import com.ppfranco.projeto01.entidades.Pedido;
 
 import com.ppfranco.projeto01.servicos.PedidoServico;
@@ -22,16 +24,18 @@ public class PedidoRecurso {
 	private PedidoServico servico;
 	
 	@GetMapping
-	public ResponseEntity<List<Pedido>> findAll(){
+	public ResponseEntity<List<PedidoDTO>> findAll(){
 		List<Pedido> pedidos = servico.findAll();
-		return ResponseEntity.ok().body(pedidos);
+		List<PedidoDTO> listDto = pedidos.stream().map(x -> new PedidoDTO(x)).collect(Collectors.toList());
+		return ResponseEntity.ok().body(listDto);
 		
 	}
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Pedido> findById(@PathVariable Long id){
+	public ResponseEntity<PedidoDTO> findById(@PathVariable Long id){
 		Pedido obj = servico.findById(id);
-		return ResponseEntity.ok().body(obj);
+		PedidoDTO dto = new PedidoDTO(obj);
+		return ResponseEntity.ok().body(dto);
 		
 		
 	}

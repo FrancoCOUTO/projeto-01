@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import com.ppfranco.projeto01.dto.UserDTO;
 import com.ppfranco.projeto01.entidades.User;
 import com.ppfranco.projeto01.repositories.UserRepositories;
 import com.ppfranco.projeto01.servicos.exception.DataErrorExepition;
@@ -28,7 +29,7 @@ public class UserServico {
 
 	public User findById(long id) {
 		Optional<User> obj = repository.findById(id);
-		return obj.orElseThrow(()-> new ResourseNotFoundExeption(id));
+		return obj.orElseThrow(() -> new ResourseNotFoundExeption(id));
 	}
 
 	public User insert(User obj) {
@@ -37,40 +38,46 @@ public class UserServico {
 	}
 
 	public void delete(Long id) {
-		if(!repository.existsById(id)) {
+		if (!repository.existsById(id)) {
 			throw new ResourseNotFoundExeption(id);
 		}
 		try {
-		repository.deleteById(id);
-		
-		}catch(DataIntegrityViolationException e) {
+			repository.deleteById(id);
+
+		} catch (DataIntegrityViolationException e) {
 			throw new DataErrorExepition(e.getMessage());
-		
+
 		}
 
 	}
+
 	@Transactional
 	public User update(Long id, User obj) {
-		
+
 		try {
-		User entity = repository.getReferenceById(id);
-		updateData(entity , obj);
-		return repository.save(entity);
-		
-		}catch(EntityNotFoundException e) {
+			User entity = repository.getReferenceById(id);
+			updateData(entity, obj);
+			return repository.save(entity);
+
+		} catch (EntityNotFoundException e) {
 			throw new ResourseNotFoundExeption(id);
 		}
-		
-		
+
 	}
-	
+
 	private void updateData(User entity, User obj) {
 		entity.setNome(obj.getNome());
 		entity.setEmail(obj.getEmail());
 		entity.setTelefone(obj.getTelefone());
-		
-		
-		
+
+	}
+
+	public User fromDTO(UserDTO objdto) {
+		User user = new User();
+		user.setId(objdto.getId());
+		user.setNome(objdto.getNome());
+		user.setEmail(objdto.getEmail());
+		return user;
 	}
 
 }
